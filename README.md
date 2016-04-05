@@ -1,6 +1,14 @@
 BeatPicker
 ==========
 
+This is the same as original, but i added a start day of the week parameter.
+
+
+Put it in the options -  startDayOfWeek: {number} ,  
+(0 - sunday, 1 - monday, 2 - tuesday, etc.)
+
+
+
 Simple and powerful date picker widget for jQuery
 ## Dependencies
 * jQuery1.8.0+

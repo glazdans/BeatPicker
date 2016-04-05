@@ -9,6 +9,7 @@ BeatPicker.prototype = {
     pickerNode: null,
     daysSimple: ["Su" , "Mo" , "Tu" , "We" , "Th" , "Fr" , "Sa"],
     daysFull: [],
+    startDayOfWeek: 0,
     monthsSimple: ["Jan" , "Feb" , "Mar" , "Apr"  , "May" , "Jun" , "Jul" , "Aug" , "Sep" , "Oct" , "Nov" , "Dec"],
     monthsFull: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     startDate: new Date(),
@@ -146,6 +147,16 @@ BeatPicker.prototype = {
     _topicMap: {},
 
     constructor: function () {
+        // Swap days around
+        var swapedDays = this.daysSimple;
+        if(this.startDayOfWeek > 0 && this.startDayOfWeek < 7){
+            for(var i = 0; i < this.startDayOfWeek; i++){
+                var DayName = swapedDays.shift();
+                swapedDays.push(DayName);
+            }
+        }
+        this.daysSimple = swapedDays;
+
         !window.beatPickerList && (window.beatPickerList = []);
         window.beatPickerList.push(this);
         this._enhanceLibFunctions();
@@ -256,7 +267,7 @@ BeatPicker.prototype = {
         this._inputParentNode.append(elem);
     },
     _createIcon: function () {
-        this.dateInputNode.add(this._dateInputToNode).css("background-image", "url('" + this.view.iconImage + "')")
+        //this.dateInputNode.add(this._dateInputToNode).css("background-image", "url('" + this.view.iconImage + "')")
     },
     _createNavBar: function (header) {
         var self = this;
@@ -769,7 +780,11 @@ BeatPicker.prototype = {
     _currentDateExpose: function (date) {
         var backUpDate = new Date(date.getTime());
         backUpDate.setDate(1);
-        return { firstDay: backUpDate.getDay(), date: date.getDate(), day: date.getDay(), month: date.getMonth(), year: date.getFullYear()}
+        var driftAmount = this.startDayOfWeek;
+        if(backUpDate.getDay() - driftAmount < 1){
+            driftAmount-=7;
+        }
+        return { firstDay: backUpDate.getDay()-driftAmount, date: date.getDate(), day: date.getDay(), month: date.getMonth(), year: date.getFullYear()}
     },
     _numberOfDaysInMonth: function (date) {
         var month = date.getMonth();
